@@ -2,13 +2,6 @@ FROM ubuntu:artful
 
 MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
 
-RUN    adduser --quiet --shell /bin/bash --gecos "OSCAR user,101,," --disabled-password oscar \
-    && adduser oscar sudo \
-    && chown -R oscar:oscar /home/oscar/ \
-    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-    && cd /home/oscar \
-    && touch .sudo_as_admin_successful
-
 RUN    apt-get update -qq \
     && apt-get install -y \
        sudo vim ant ant-optional autoconf autogen \
@@ -21,6 +14,13 @@ RUN    apt-get update -qq \
        libsvn-perl libtool libxml-libxml-perl libxml-libxslt-perl libxml-perl libxml-writer-perl libxml2-dev libxslt-dev \
        m4 make nano python-dev sudo wget xsltproc ninja-build \
        4ti2 graphviz gfortran cmake pkg-config patch libjson-perl curl
+
+RUN    adduser --quiet --shell /bin/bash --gecos "OSCAR user,101,," --disabled-password oscar \
+    && adduser oscar sudo \
+    && chown -R oscar:oscar /home/oscar/ \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && cd /home/oscar \
+    && touch .sudo_as_admin_successful
 
 USER oscar
 
