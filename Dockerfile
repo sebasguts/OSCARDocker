@@ -10,7 +10,7 @@ RUN    adduser --quiet --shell /bin/bash --gecos "OSCAR user,101,," --disabled-p
     && touch .sudo_as_admin_successful
 
 RUN    apt-get update -qq \
-    && apt-get install \
+    && apt-get install -y \
        sudo vim ant ant-optional autoconf autogen \
        bliss build-essential bzip2 \
        clang debhelper default-jdk git \
