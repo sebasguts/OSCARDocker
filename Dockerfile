@@ -33,7 +33,7 @@ RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.2/julia-0.
     && rm  julia-0.6.2-full.tar.gz \
     && cd julia-0.6.2 \
     && make -j8 \
-    && sudo make install
+    && sudo ln -snf /home/oscar/julia-0.6.2/julia /usr/local/bin/julia
 
 COPY install_hecke.jl /home/oscar/install_hecke.jl
 RUN   julia install_hecke.jl
