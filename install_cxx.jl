@@ -1,2 +1,2 @@
+Pkg.update()
 Pkg.add( "Cxx" )
-using Cxx
