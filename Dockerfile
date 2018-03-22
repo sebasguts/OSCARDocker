@@ -44,7 +44,7 @@ COPY install_cxx.jl /home/oscar/install_cxx.jl
 RUN julia install_cxx.jl
 
 COPY compile_cxx.jl /home/oscar/compile_cxx.jl
-RUN julia compile_cxx,jl
+RUN julia compile_cxx.jl
 
 RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r1.tar.bz2 \
     && tar xf polymake-3.2r1.tar.bz2 \
