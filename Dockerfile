@@ -43,6 +43,9 @@ ENV JULIA_CXX_RTTI 1
 COPY install_cxx.jl /home/oscar/install_cxx.jl
 RUN julia install_cxx.jl
 
+COPY compile_cxx.jl /home/oscar/compile_cxx.jl
+RUN julia compile_cxx,jl
+
 RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r1.tar.bz2 \
     && tar xf polymake-3.2r1.tar.bz2 \
     && rm polymake-3.2r1.tar.bz2 \
@@ -57,3 +60,6 @@ RUN julia install_polymake.jl
 
 COPY install_singular.jl /home/oscar/install_singular.jl
 RUN sudo julia install_singular.jl
+
+COPY install_oscar.jl /home/oscar/install_oscar.jl
+RUN julia install_oscar.jl
