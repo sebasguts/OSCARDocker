@@ -27,11 +27,11 @@ USER oscar
 ENV HOME /home/oscar
 WORKDIR /home/oscar
 
-
 RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.2/julia-0.6.2-full.tar.gz \
     && tar xf julia-0.6.2-full.tar.gz \
     && rm  julia-0.6.2-full.tar.gz \
     && cd julia-0.6.2 \
+    && export MARCH=x86-64 \
     && make -j8 \
     && sudo ln -snf /home/oscar/julia-0.6.2/julia /usr/local/bin/julia
 
