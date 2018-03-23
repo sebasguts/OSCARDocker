@@ -63,3 +63,9 @@ RUN sudo julia install_singular.jl
 
 COPY install_oscar.jl /home/oscar/install_oscar.jl
 RUN julia install_oscar.jl
+
+RUN    sudo apt-get install python3-pip \
+    && sudo pip3 install notebook
+
+COPY install_ijulia.jl /home/oscar/install_ijulia.jl
+RUN julia install_ijulia.jl
