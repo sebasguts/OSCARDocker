@@ -35,23 +35,24 @@ RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.2/julia-0.
     && make -j8 \
     && sudo ln -snf /home/oscar/julia-0.6.2/julia /usr/local/bin/julia
 
+RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r2.tar.bz2 \
+    && tar xf polymake-3.2r2.tar.bz2 \
+    && rm polymake-3.2r2.tar.bz2 \
+    && cd polymake-3.2 \
+    && ./configure \
+    && sudo ninja -C build/Opt install
+
 COPY install_hecke.jl /home/oscar/install_hecke.jl
 RUN   julia install_hecke.jl
 
 ENV JULIA_CXX_RTTI 1
+ENV PREBUILT_CI_BINARIES 1
 
 COPY install_cxx.jl /home/oscar/install_cxx.jl
 RUN julia install_cxx.jl
 
 COPY compile_cxx.jl /home/oscar/compile_cxx.jl
 RUN julia < compile_cxx.jl
-
-RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r1.tar.bz2 \
-    && tar xf polymake-3.2r1.tar.bz2 \
-    && rm polymake-3.2r1.tar.bz2 \
-    && cd polymake-3.2 \
-    && ./configure \
-    && sudo ninja -C build/Opt install
 
 ENV POLYMAKE_CONFIG polymake-config
 
