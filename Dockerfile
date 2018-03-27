@@ -35,7 +35,7 @@ RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.2/julia-0.
     && cd julia-0.6.2 \
     && export MARCH=x86-64 \
     && cp ../Make.user . \
-    && make -j8 \
+    && make \
     && sudo ln -snf /home/oscar/julia-0.6.2/julia /usr/local/bin/julia
 
 RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r2.tar.bz2 \
