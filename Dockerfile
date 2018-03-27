@@ -27,11 +27,14 @@ USER oscar
 ENV HOME /home/oscar
 WORKDIR /home/oscar
 
+COPY Make.user /home/oscar/Make.user
+
 RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.2/julia-0.6.2-full.tar.gz \
     && tar xf julia-0.6.2-full.tar.gz \
     && rm  julia-0.6.2-full.tar.gz \
     && cd julia-0.6.2 \
     && export MARCH=x86-64 \
+    && cp ../Make.user . \
     && make -j8 \
     && sudo ln -snf /home/oscar/julia-0.6.2/julia /usr/local/bin/julia
 
@@ -46,7 +49,6 @@ COPY install_hecke.jl /home/oscar/install_hecke.jl
 RUN   julia install_hecke.jl
 
 ENV JULIA_CXX_RTTI 1
-ENV PREBUILT_CI_BINARIES 1
 
 COPY install_cxx.jl /home/oscar/install_cxx.jl
 RUN julia install_cxx.jl
