@@ -8,8 +8,8 @@ RUN    apt-get update -qq \
        bliss build-essential bzip2 \
        clang debhelper default-jdk git \
        language-pack-en language-pack-el-base libbliss-dev libboost-dev \
-       libboost-python1.62-dev libboost-python-dev libcdd0d libcdd-dev libdatetime-perl libflint-2.5.2 \
-       libflint-dev libglpk-dev libgmp-dev libgmp10 libgmpxx4ldbl libmpfr-dev libncurses5-dev libnormaliz-dev libntl27 libntl-dev \
+      libboost-python-dev libcdd0d libcdd-dev libdatetime-perl \
+       libflint-dev libglpk-dev libgmp-dev libgmp10 libgmpxx4ldbl libmpfr-dev libncurses5-dev libnormaliz-dev libntl-dev \
        libperl-dev libppl-dev libreadline6-dev libterm-readline-gnu-perl libterm-readkey-perl \
        libsvn-perl libtool libxml-libxml-perl libxml-libxslt-perl libxml-perl libxml-writer-perl libxml2-dev libxslt-dev \
        m4 make nano python-dev sudo wget xsltproc ninja-build \
