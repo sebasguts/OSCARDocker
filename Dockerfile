@@ -1,4 +1,4 @@
-FROM ubuntu:artful
+FROM ubuntu:xenial
 
 MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
 
