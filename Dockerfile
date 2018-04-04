@@ -42,7 +42,7 @@ RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r2.tar.b
     && tar xf polymake-3.2r2.tar.bz2 \
     && rm polymake-3.2r2.tar.bz2 \
     && cd polymake-3.2 \
-    && ./configure \
+    && ./configure --without-native \
     && sudo ninja -C build/Opt install
 
 COPY install_hecke.jl /home/oscar/install_hecke.jl
