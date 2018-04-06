@@ -29,6 +29,8 @@ WORKDIR /home/oscar
 
 COPY Make.user /home/oscar/Make.user
 
+ENV MARCH x86-64
+
 RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.2/julia-0.6.2-full.tar.gz \
     && tar xf julia-0.6.2-full.tar.gz \
     && rm  julia-0.6.2-full.tar.gz \
@@ -72,3 +74,6 @@ RUN    sudo apt-get install -y python3-pip \
 
 COPY install_ijulia.jl /home/oscar/install_ijulia.jl
 RUN julia install_ijulia.jl
+
+ENTRYPOINT touch /home/oscar/.julia/v0.6/Cxx/src/Cxx.jl && /bin/bash
+CMD /bin/bash
