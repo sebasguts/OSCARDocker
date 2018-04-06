@@ -75,5 +75,4 @@ RUN    sudo apt-get install -y python3-pip \
 COPY install_ijulia.jl /home/oscar/install_ijulia.jl
 RUN julia install_ijulia.jl
 
-ENTRYPOINT touch /home/oscar/.julia/v0.6/Cxx/src/Cxx.jl && /bin/bash
-CMD /bin/bash
+RUN touch /home/oscar/.julia/v0.6/Cxx/src/Cxx.jl
