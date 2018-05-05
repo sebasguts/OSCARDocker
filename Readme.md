@@ -22,7 +22,7 @@ To start Julia in the Docker image, execute
 ```
 docker run -it oscarsystem/oscardocker:latest
 ```
-You can then start julia via the command.
+You can then start julia via the command
 ```
 julia
 ```
