@@ -36,7 +36,10 @@ or Polymake.jl via
 using Cxx
 using Polymake
 ```
-For examples see [here](https://nbviewer.jupyter.org/github/oscar-system/OSCARBinder/blob/master/Singular.ipynb) for Singular and [here](https://nbviewer.jupyter.org/github/oscar-system/OSCARBinder/blob/master/g-vectors_of_random_simplicial_6-polytopes.ipynb)
+
+Please note that for Polymake and Singular to work you need to execute `using Cxx` first. This is due to current portability issues.
+
+For an examples see [here](https://nbviewer.jupyter.org/github/oscar-system/OSCARBinder/blob/master/Singular.ipynb) for Singular and [here](https://nbviewer.jupyter.org/github/oscar-system/OSCARBinder/blob/master/g-vectors_of_random_simplicial_6-polytopes.ipynb)
 for Polymake.
 
 ## Usage of Jupyter
