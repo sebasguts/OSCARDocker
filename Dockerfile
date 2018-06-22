@@ -31,14 +31,14 @@ COPY Make.user /home/oscar/Make.user
 
 ENV MARCH x86-64
 
-RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.2/julia-0.6.2-full.tar.gz \
-    && tar xf julia-0.6.2-full.tar.gz \
-    && rm  julia-0.6.2-full.tar.gz \
-    && cd julia-0.6.2 \
+RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.3/julia-0.6.3-full.tar.gz \
+    && tar xf julia-0.6.3-full.tar.gz \
+    && rm  julia-0.6.3-full.tar.gz \
+    && cd julia-0.6.3 \
     && export MARCH=x86-64 \
     && cp ../Make.user . \
     && make \
-    && sudo ln -snf /home/oscar/julia-0.6.2/julia /usr/local/bin/julia
+    && sudo ln -snf /home/oscar/julia-0.6.3/julia /usr/local/bin/julia
 
 RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r2.tar.bz2 \
     && tar xf polymake-3.2r2.tar.bz2 \
