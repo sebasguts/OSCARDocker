@@ -47,8 +47,9 @@ RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r2.tar.b
     && ./configure --without-native \
     && sudo ninja -C build/Opt install
 
+ENV CURRENT_DATE_DOCKER=unkonwn
 COPY install_hecke.jl /home/oscar/install_hecke.jl
-RUN   julia install_hecke.jl
+RUN CURRENT_DATE_DOCKER=${CURRENT_DATE_DOCKER} julia install_hecke.jl
 
 ENV JULIA_CXX_RTTI 1
 
