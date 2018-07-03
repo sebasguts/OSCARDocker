@@ -1,2 +1,3 @@
 Pkg.update()
-Pkg.add( "Cxx" )
+Pkg.clone( "https://github.com/Keno/Cxx.jl" )
+Pkg.build( "Cxx" )
