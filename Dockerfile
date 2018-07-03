@@ -8,12 +8,12 @@ RUN    apt-get update -qq \
        bliss build-essential bzip2 \
        clang debhelper default-jdk git \
        language-pack-en language-pack-el-base libbliss-dev libboost-dev \
-      libboost-python-dev libcdd0d libcdd-dev libdatetime-perl \
+       libboost-python-dev libcdd0d libcdd-dev libdatetime-perl \
        libflint-dev libglpk-dev libgmp-dev libgmp10 libgmpxx4ldbl libmpfr-dev libncurses5-dev libnormaliz-dev libntl-dev \
        libperl-dev libppl-dev libreadline6-dev libterm-readline-gnu-perl libterm-readkey-perl \
        libsvn-perl libtool libxml-libxml-perl libxml-libxslt-perl libxml-perl libxml-writer-perl libxml2-dev libxslt-dev \
        m4 make nano python-dev sudo wget xsltproc ninja-build \
-       4ti2 graphviz gfortran cmake pkg-config patch libjson-perl curl
+       4ti2 graphviz gfortran cmake pkg-config patch libjson-perl curl unzip python3-pip libzmq3-dev
 
 RUN    adduser --quiet --shell /bin/bash --gecos "OSCAR user,101,," --disabled-password oscar \
     && adduser oscar sudo \
@@ -47,7 +47,41 @@ RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r2.tar.b
     && ./configure --without-native \
     && sudo ninja -C build/Opt install
 
+
 ENV CURRENT_DATE_DOCKER=unkonwn
+RUN   CURRENT_DATE_DOCKER=${CURRENT_DATE_DOCKER} cd /home/oscar/ \
+    && wget -q https://github.com/gap-system/gap/archive/master.zip \
+    && unzip -q master.zip \
+    && rm master.zip \
+    && cd gap-master \
+    && ./autogen.sh \
+    && ./configure \
+    && make \
+    && mkdir pkg \
+    && cd pkg \
+    && wget -q https://www.gap-system.org/pub/gap/gap4pkgs/packages-master.tar.gz \
+    && tar xzf packages-master.tar.gz \
+    && rm packages-master.tar.gz \
+    && ../bin/BuildPackages.sh
+
+RUN    sudo pip3 install notebook jupyterlab_launcher jupyterlab traitlets ipython vdom
+
+RUN    cd /home/oscar/gap-master/pkg \
+    && git clone https://github.com/gap-packages/JupyterKernel.git \
+    && cd JupyterKernel \
+    && python3 setup.py install --user \
+    && cd .. \
+    && git clone https://github.com/oscar-system/GAPJulia \
+    && cd GAPJulia/JuliaInterface \
+    && ./autogen.sh \
+    && ./configure --with-gaproot=/home/oscar/gap-master --with-julia=/home/oscar/julia/usr \
+    && make \
+    && cd ../JuliaExperimental \
+    && ./autogen.sh \
+    && ./configure --with-gaproot=/home/oscar/gap-master --with-julia=/home/oscar/julia/usr --with-juliainterface=../JuliaInterface \
+    && make \
+    && sudo ln -snf /home/oscar/gap-master/gap /usr/local/bin/gap
+
 COPY install_hecke.jl /home/oscar/install_hecke.jl
 RUN CURRENT_DATE_DOCKER=${CURRENT_DATE_DOCKER} julia install_hecke.jl
 
@@ -70,10 +104,10 @@ RUN sudo julia install_singular.jl
 COPY install_oscar.jl /home/oscar/install_oscar.jl
 RUN julia install_oscar.jl
 
-RUN    sudo apt-get install -y python3-pip \
-    && sudo pip3 install notebook
-
 COPY install_ijulia.jl /home/oscar/install_ijulia.jl
 RUN julia install_ijulia.jl
 
 RUN touch /home/oscar/.julia/v0.6/Cxx/src/Cxx.jl
+
+ENV PATH /home/oscar/gap-master/pkg/JupyterKernel/bin:${PATH}
+ENV JUPYTER_GAP_EXECUTABLE /home/oscar/gap-master/bin/gap.sh
