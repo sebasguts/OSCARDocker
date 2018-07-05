@@ -109,5 +109,9 @@ RUN julia install_ijulia.jl
 
 RUN touch /home/oscar/.julia/v0.6/Cxx/src/Cxx.jl
 
+RUN echo "c.NotebookApp.token = ''" > /home/oscar/.jupyter/jupyter_notebook_config.py
+
+COPY Examples Examples
+
 ENV PATH /home/oscar/gap-master/pkg/JupyterKernel/bin:${PATH}
 ENV JUPYTER_GAP_EXECUTABLE /home/oscar/gap-master/bin/gap.sh
