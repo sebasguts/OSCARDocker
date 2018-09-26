@@ -4,16 +4,67 @@ MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
 
 RUN    apt-get update -qq \
     && apt-get install -y \
-       sudo vim ant ant-optional autoconf autogen \
-       bliss build-essential bzip2 \
-       clang debhelper default-jdk git \
-       language-pack-en language-pack-el-base libbliss-dev libboost-dev \
-       libboost-python-dev libcdd0d libcdd-dev libdatetime-perl \
-       libflint-dev libglpk-dev libgmp-dev libgmp10 libgmpxx4ldbl libmpfr-dev libncurses5-dev libnormaliz-dev libntl-dev \
-       libperl-dev libppl-dev libreadline6-dev libterm-readline-gnu-perl libterm-readkey-perl \
-       libsvn-perl libtool libxml-libxml-perl libxml-libxslt-perl libxml-perl libxml-writer-perl libxml2-dev libxslt-dev \
-       m4 make nano python-dev sudo wget xsltproc ninja-build \
-       4ti2 graphviz gfortran cmake pkg-config patch libjson-perl curl unzip python3-pip libzmq3-dev
+       4ti2 \
+       ant \
+       ant-optional \
+       autoconf \
+       autogen \
+       bliss \
+       build-essential \
+       bzip2 \
+       clang \
+       cmake \
+       curl \
+       debhelper \
+       default-jdk \
+       gfortran \
+       git \
+       graphviz \
+       language-pack-el-base \
+       language-pack-en \
+       libbliss-dev \
+       libboost-dev \
+       libboost-python-dev \
+       libcdd-dev \
+       libcdd0d \
+       libdatetime-perl \
+       libflint-dev \
+       libglpk-dev \
+       libgmp-dev \
+       libgmp10 \
+       libgmpxx4ldbl \
+       libjson-perl \
+       libmpfr-dev \
+       libncurses5-dev \
+       libnormaliz-dev \
+       libntl-dev \
+       libperl-dev \
+       libppl-dev \
+       libreadline6-dev \
+       libsvn-perl \
+       libterm-readkey-perl \
+       libterm-readline-gnu-perl \
+       libtool \
+       libxml-libxml-perl \
+       libxml-libxslt-perl \
+       libxml-perl \
+       libxml-writer-perl \
+       libxml2-dev \
+       libxslt-dev \
+       libzmq3-dev
+       m4 \
+       make \
+       nano \
+       ninja-build \
+       patch \
+       pkg-config \
+       python-dev \
+       python3-pip \
+       sudo \
+       unzip \
+       vim \
+       wget \
+       xsltproc
 
 RUN    adduser --quiet --shell /bin/bash --gecos "OSCAR user,101,," --disabled-password oscar \
     && adduser oscar sudo \
