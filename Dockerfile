@@ -51,7 +51,7 @@ RUN    apt-get update -qq \
        libxml-writer-perl \
        libxml2-dev \
        libxslt-dev \
-       libzmq3-dev
+       libzmq3-dev \
        m4 \
        make \
        nano \
