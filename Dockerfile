@@ -64,7 +64,8 @@ RUN    apt-get update -qq \
        unzip \
        vim \
        wget \
-       xsltproc
+       xsltproc \
+       zlib1g-dev
 
 RUN    adduser --quiet --shell /bin/bash --gecos "OSCAR user,101,," --disabled-password oscar \
     && adduser oscar sudo \
@@ -78,44 +79,40 @@ USER oscar
 ENV HOME /home/oscar
 WORKDIR /home/oscar
 
-COPY Make.user /home/oscar/Make.user
+RUN sudo pip3 install notebook jupyterlab_launcher jupyterlab traitlets ipython vdom
+RUN    mkdir .jupyter \
+    && echo "c.NotebookApp.token = ''" > /home/oscar/.jupyter/jupyter_notebook_config.py
 
-ENV MARCH x86-64
+### Install Julia
 
-RUN    wget https://github.com/JuliaLang/julia/releases/download/v0.6.3/julia-0.6.3-full.tar.gz \
-    && tar xf julia-0.6.3-full.tar.gz \
-    && rm  julia-0.6.3-full.tar.gz \
-    && cd julia \
-    && export MARCH=x86-64 \
-    && cp ../Make.user . \
-    && make \
-    && sudo ln -snf /home/oscar/julia/julia /usr/local/bin/julia
+ENV JULIA_VERSION julia-1.1.0
 
-RUN    wget https://polymake.org/lib/exe/fetch.php/download/polymake-3.2r2.tar.bz2 \
-    && tar xf polymake-3.2r2.tar.bz2 \
-    && rm polymake-3.2r2.tar.bz2 \
-    && cd polymake-3.2 \
+RUN    wget https://julialang-s3.julialang.org/bin/linux/x64/1.1/${JULIA_VERSION}-linux-x86_64.tar.gz \
+    && tar xf ${JULIA_VERSION}-linux-x86_64.tar.gz \
+    && rm ${JULIA_VERSION}-linux-x86_64.tar.gz \ 
+    && sudo ln -snf /home/oscar/${JULIA_VERSION}/bin/julia /usr/local/bin/julia
+
+### Install Polymake
+
+RUN    git clone https://github.com/polymake/polymake.git \
+    && cd polymake \
+    && git checkout Snapshots \
     && ./configure --without-native \
-    && sudo ninja -C build/Opt install
+    && sudo ninja -j8 -C build/Opt install
 
+### Install GAP & related
 
-ENV CURRENT_DATE_DOCKER=unkonwn
-RUN   CURRENT_DATE_DOCKER=${CURRENT_DATE_DOCKER} cd /home/oscar/ \
-    && wget -q https://github.com/gap-system/gap/archive/master.zip \
+RUN    wget -q https://github.com/gap-system/gap/archive/master.zip \
     && unzip -q master.zip \
     && rm master.zip \
     && cd gap-master \
     && ./autogen.sh \
-    && ./configure \
+    && ./configure --with-julia=/home/oscar/${JULIA_VERSION} --with-gc=julia \
     && make \
-    && mkdir pkg \
+    && make bootstrap-pkg-full \
     && cd pkg \
-    && wget -q https://www.gap-system.org/pub/gap/gap4pkgs/packages-master.tar.gz \
-    && tar xzf packages-master.tar.gz \
-    && rm packages-master.tar.gz \
-    && ../bin/BuildPackages.sh
-
-RUN    sudo pip3 install notebook jupyterlab_launcher jupyterlab traitlets ipython vdom
+    && ../bin/BuildPackages.sh \
+    && sudo ln -snf /home/oscar/gap-master/gap /usr/local/bin/gap
 
 RUN    cd /home/oscar/gap-master/pkg \
     && git clone https://github.com/gap-packages/JupyterKernel.git \
@@ -123,46 +120,25 @@ RUN    cd /home/oscar/gap-master/pkg \
     && python3 setup.py install --user \
     && cd .. \
     && git clone https://github.com/oscar-system/GAPJulia \
-    && cd GAPJulia/JuliaInterface \
-    && ./autogen.sh \
-    && ./configure --with-gaproot=/home/oscar/gap-master --with-julia=/home/oscar/julia/usr \
-    && make \
-    && cd ../JuliaExperimental \
-    && ./autogen.sh \
-    && ./configure --with-gaproot=/home/oscar/gap-master --with-julia=/home/oscar/julia/usr --with-juliainterface=../JuliaInterface \
-    && make \
-    && sudo ln -snf /home/oscar/gap-master/gap /usr/local/bin/gap
-
-COPY install_hecke.jl /home/oscar/install_hecke.jl
-RUN CURRENT_DATE_DOCKER=${CURRENT_DATE_DOCKER} julia install_hecke.jl
-
-ENV JULIA_CXX_RTTI 1
-
-COPY install_cxx.jl /home/oscar/install_cxx.jl
-RUN julia install_cxx.jl
-
-COPY compile_cxx.jl /home/oscar/compile_cxx.jl
-RUN julia < compile_cxx.jl
-
-ENV POLYMAKE_CONFIG polymake-config
-
-COPY install_polymake.jl /home/oscar/install_polymake.jl
-RUN julia install_polymake.jl
-
-COPY install_singular.jl /home/oscar/install_singular.jl
-RUN sudo julia install_singular.jl
-
-COPY install_oscar.jl /home/oscar/install_oscar.jl
-RUN julia install_oscar.jl
-
-COPY install_ijulia.jl /home/oscar/install_ijulia.jl
-RUN julia install_ijulia.jl
-
-RUN touch /home/oscar/.julia/v0.6/Cxx/src/Cxx.jl
-
-RUN echo "c.NotebookApp.token = ''" > /home/oscar/.jupyter/jupyter_notebook_config.py
-
-COPY Examples Examples
+    && cd GAPJulia \
+    && ./configure \
+    && make
 
 ENV PATH /home/oscar/gap-master/pkg/JupyterKernel/bin:${PATH}
 ENV JUPYTER_GAP_EXECUTABLE /home/oscar/gap-master/bin/gap.sh
+
+### Install Julia packages
+
+ENV POLYMAKE_CONFIG /usr/local/bin/polymake-config
+
+RUN julia -e "import Pkg; Pkg.add( \"CxxWrap\" )"
+RUN julia -e "import Pkg; Pkg.add( \"IJulia\" )"
+RUN julia -e "import Pkg; Pkg.add( \"AbstractAlgebra\" )"
+RUN julia -e "import Pkg; Pkg.add( \"Nemo\" )"
+RUN julia -e "import Pkg; Pkg.add(Pkg.PackageSpec(url=\"https://github.com/oscar-system/Polymake.jl\", rev=\"master\" ))"
+RUN julia -e "import Pkg; Pkg.add(Pkg.PackageSpec(url=\"https://github.com/oscar-system/Singular.jl\", rev=\"master\" ))"
+RUN julia -e "import Pkg; Pkg.add(Pkg.PackageSpec(url=\"https://github.com/oscar-system/OSCAR.jl\", rev=\"master\" ))"
+RUN julia -e "import Pkg; Pkg.add( \"Hecke\" )"
+
+COPY Examples Examples
+
