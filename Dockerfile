@@ -92,14 +92,6 @@ RUN    wget https://julialang-s3.julialang.org/bin/linux/x64/1.1/${JULIA_VERSION
     && rm ${JULIA_VERSION}-linux-x86_64.tar.gz \ 
     && sudo ln -snf /home/oscar/${JULIA_VERSION}/bin/julia /usr/local/bin/julia
 
-### Install Polymake
-
-RUN    git clone https://github.com/polymake/polymake.git \
-    && cd polymake \
-    && git checkout Snapshots \
-    && ./configure --without-native \
-    && sudo ninja -j8 -C build/Opt install
-
 ### Install GAP & related
 
 RUN    wget -q https://github.com/gap-system/gap/archive/master.zip \
@@ -117,19 +109,12 @@ RUN    wget -q https://github.com/gap-system/gap/archive/master.zip \
 RUN    cd /home/oscar/gap-master/pkg \
     && git clone https://github.com/gap-packages/JupyterKernel.git \
     && cd JupyterKernel \
-    && python3 setup.py install --user \
-    && cd .. \
-    && git clone https://github.com/oscar-system/GAPJulia \
-    && cd GAPJulia \
-    && ./configure \
-    && make
+    && python3 setup.py install --user
 
 ENV PATH /home/oscar/gap-master/pkg/JupyterKernel/bin:${PATH}
-ENV JUPYTER_GAP_EXECUTABLE /home/oscar/gap-master/bin/gap.sh
+ENV JUPYTER_GAP_EXECUTABLE /home/oscar/.julia/gap.sh
+ENV GAPROOT /home/oscar/gap-master
 
-### Install Julia packages
-
-ENV POLYMAKE_CONFIG /usr/local/bin/polymake-config
 
 RUN julia -e "import Pkg; Pkg.add( \"CxxWrap\" )"
 RUN julia -e "import Pkg; Pkg.add( \"IJulia\" )"
@@ -137,8 +122,9 @@ RUN julia -e "import Pkg; Pkg.add( \"AbstractAlgebra\" )"
 RUN julia -e "import Pkg; Pkg.add( \"Nemo\" )"
 RUN julia -e "import Pkg; Pkg.add(Pkg.PackageSpec(url=\"https://github.com/oscar-system/Polymake.jl\", rev=\"master\" ))"
 RUN julia -e "import Pkg; Pkg.add(Pkg.PackageSpec(url=\"https://github.com/oscar-system/Singular.jl\", rev=\"master\" ))"
+RUN julia -e "import Pkg; Pkg.add(Pkg.PackageSpec(url=\"https://github.com/oscar-system/GAP.jl\", rev=\"master\" ))"
 RUN julia -e "import Pkg; Pkg.add(Pkg.PackageSpec(url=\"https://github.com/oscar-system/OSCAR.jl\", rev=\"master\" ))"
-RUN julia -e "import Pkg; Pkg.add( \"Hecke\" )"
+RUN julia -e "import Pkg; Pkg.add(Pkg.PackageSpec(url=\"https://github.com/thofma/Hecke.jl\", rev=\"master\" ))"
 
 COPY Examples Examples
 
