@@ -116,8 +116,8 @@ ENV JUPYTER_GAP_EXECUTABLE /home/oscar/.julia/gap.sh
 ENV GAPROOT /home/oscar/gap-master
 
 
-RUN julia -e "import Pkg; Pkg.add( \"CxxWrap\" )"
 RUN julia -e "import Pkg; Pkg.add( \"IJulia\" )"
+RUN julia -e "import Pkg; Pkg.add( \"CxxWrap\" )"
 RUN julia -e "import Pkg; Pkg.add( \"AbstractAlgebra\" )"
 RUN julia -e "import Pkg; Pkg.add( \"Nemo\" )"
 RUN julia -e "import Pkg; Pkg.add( \"Polymake\" )"
